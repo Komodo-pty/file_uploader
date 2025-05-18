@@ -10,7 +10,7 @@ Help()
 	echo -e "-p <PORT>: The port that your listener is running on\n\n"
 	echo -e "-u <URL>: The target URL that's used in POST Requests to upload a file\n\n"
 	echo -e "-n <NAME>: The 'name' attribute that's used in POST Requests (e.g. file for name=\"file\")\n\n"
-	echo -e "-e <URL>: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to."
+	echo -e "-e <URL>: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to.\n\n"
 	echo -e "-b: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. /evil.php?0=id) . Incompatible with -e"
 
 }
